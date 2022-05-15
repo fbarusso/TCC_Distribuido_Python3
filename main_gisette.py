@@ -39,6 +39,7 @@ trunc_k, trunc_m = 24, trunc_scale
 
 # for debugging
 Load_images_ON = 1  # 0: using synthetic data, 1: Load GISETTE data
+max_lines = 501
 m_syn, d_syn = 200, 100
 
 debugging_X_LCC = 0
@@ -58,28 +59,44 @@ if rank == 0:
         dir = "./"
         f = open(dir + "gisette_train.data")
         data = []
+        line_counter = 0
         for row in f.readlines():
             data.append((row.strip()).split(" "))
+            line_counter += 1
+            if line_counter > max_lines:
+                break
         f.close()
 
         f = open(dir + "gisette_train.labels")
         classes = []
+        line_counter = 0
         for row in f.readlines():
             classes.append((row.strip()).split(" "))
+            line_counter += 1
+            if line_counter > max_lines:
+                break
         f.close()
 
         X_train, y_train = np.array(data).astype(int), np.array(classes).astype(int)
 
         f = open(dir + "gisette_valid.data")
         data = []
+        line_counter = 0
         for row in f.readlines():
             data.append((row.strip()).split(" "))
+            line_counter += 1
+            if line_counter > max_lines:
+                break
         f.close()
 
         f = open(dir + "gisette_valid.labels")
         classes = []
+        line_counter = 0
         for row in f.readlines():
             classes.append((row.strip()).split(" "))
+            line_counter += 1
+            if line_counter > max_lines:
+                break
         f.close()
 
         X_test, y_test = np.array(data).astype(int), np.array(classes).astype(int)
