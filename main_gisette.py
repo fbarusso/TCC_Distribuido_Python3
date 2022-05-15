@@ -38,14 +38,14 @@ trunc_scale = alpha_exp + coeffs1_exp - q_bit_y
 trunc_k, trunc_m = 24, trunc_scale
 
 # for debugging
-Load_images_ON = 0  # 0: using synthetic data, 1: Load GISETTE data
+Load_images_ON = 1  # 0: using synthetic data, 1: Load GISETTE data
 m_syn, d_syn = 200, 100
 
 debugging_X_LCC = 0
 debugging_w_LCC = 0
 debugging_f_SS_T = 0
 debugging_w_SS_T = 0
-debugging_hist_w_SS_T = 0
+debugging_hist_w_SS_T = 1
 
 if rank == 0:
     print("Hi from crypto-service provider", "rank", rank)
@@ -55,7 +55,7 @@ if rank == 0:
         t0_read = time.time()  # start timer
 
         print("00. Load Gisette")
-        dir = "./datasets/Gisette/"
+        dir = "./"
         f = open(dir + "gisette_train.data")
         data = []
         for row in f.readlines():
