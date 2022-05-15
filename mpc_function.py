@@ -45,11 +45,11 @@ def gen_Lagrange_coeffs(alpha_s, beta_s, p, is_K1=0):
     else:
         num_alpha = len(alpha_s)
     U = np.zeros((num_alpha, len(beta_s)), dtype='int64')
-    #         U = [[0 for col in range(len(beta_s))] for row in range(len(alpha_s))]
+    #         U = [[0 for col in list(range(len(beta_s))] for row in list(range(len(alpha_s))]
     # print(alpha_s)
     # print(beta_s)
-    for i in range(num_alpha):
-        for j in range(len(beta_s)):
+    for i in list(range(num_alpha)):
+        for j in list(range(len(beta_s))):
             cur_beta = beta_s[j];
 
             den = PI([cur_beta - o for o in beta_s if cur_beta != o], p)
@@ -66,14 +66,14 @@ def BGW_encoding(X, N, T, p):
     m = len(X)
     d = len(X[0])
 
-    alpha_s = range(1, N + 1)
+    alpha_s = list(range(1, N + 1))
     alpha_s = np.int64(np.mod(alpha_s, p))
     X_BGW = np.zeros((N, m, d), dtype='int64')
     R = np.random.randint(p, size=(T + 1, m, d))
     R[0, :, :] = np.mod(X, p)
 
-    for i in range(N):
-        for t in range(T + 1):
+    for i in list(range(N)):
+        for t in list(range(T + 1)):
             X_BGW[i, :, :] = np.mod(X_BGW[i, :, :] + R[t, :, :] * (alpha_s[i] ** t), p)
     return X_BGW
 
@@ -81,7 +81,7 @@ def BGW_encoding(X, N, T, p):
 def gen_BGW_lambda_s(alpha_s, p):
     lambda_s = np.zeros((1, len(alpha_s)), dtype='int64')
 
-    for i in range(len(alpha_s)):
+    for i in list(range(len(alpha_s))):
         cur_alpha = alpha_s[i];
 
         den = PI([cur_alpha - o for o in alpha_s if cur_alpha != o], p)
@@ -97,7 +97,7 @@ def BGW_decoding(f_eval, worker_idx, p):  # decode the output from T+1 evaluatio
 
     # t0 = time.time()
     max = np.max(worker_idx) + 2
-    alpha_s = range(1, max)
+    alpha_s = list(range(1, max))
     alpha_s = np.int64(np.mod(alpha_s, p))
     alpha_s_eval = [alpha_s[i] for i in worker_idx]
     # t1 = time.time()
@@ -116,14 +116,14 @@ def LCC_encoding(X, N, K, T, p):
     d = len(X[0])
     # print(m,d,m//K)
     X_sub = np.zeros((K + T, m // K, d), dtype='int64')
-    for i in range(K):
+    for i in list(range(K)):
         X_sub[i] = X[i * m // K:(i + 1) * m // K:]
-    for i in range(K, K + T):
+    for i in list(range(K, K + T)):
         X_sub[i] = np.random.randint(p, size=(m // K, d))
 
     n_beta = K + T
     stt_b, stt_a = -int(np.floor(n_beta / 2)), -int(np.floor(N / 2))
-    beta_s, alpha_s = range(stt_b, stt_b + n_beta), range(stt_a, stt_a + N)
+    beta_s, alpha_s = list(range(stt_b, stt_b + n_beta)), list(range(stt_a, stt_a + N))
     alpha_s = np.array(np.mod(alpha_s, p)).astype('int64')
     beta_s = np.array(np.mod(beta_s, p)).astype('int64')
 
@@ -131,8 +131,8 @@ def LCC_encoding(X, N, K, T, p):
     # print U
 
     X_LCC = np.zeros((N, m // K, d), dtype='int64')
-    for i in range(N):
-        for j in range(K + T):
+    for i in list(range(N)):
+        for j in list(range(K + T)):
             X_LCC[i, :, :] = np.mod(X_LCC[i, :, :] + np.mod(U[i][j] * X_sub[j, :, :], p), p)
     return X_LCC
 
@@ -142,14 +142,14 @@ def LCC_encoding_w_Random(X, R_, N, K, T, p):
     d = len(X[0])
     # print(m,d,m//K)
     X_sub = np.zeros((K + T, m // K, d), dtype='int64')
-    for i in range(K):
+    for i in list(range(K)):
         X_sub[i] = X[i * m // K:(i + 1) * m // K:]
-    for i in range(K, K + T):
+    for i in list(range(K, K + T)):
         X_sub[i] = R_[i - K, :, :].astype('int64')
 
     n_beta = K + T
     stt_b, stt_a = -int(np.floor(n_beta / 2)), -int(np.floor(N / 2))
-    beta_s, alpha_s = range(stt_b, stt_b + n_beta), range(stt_a, stt_a + N)
+    beta_s, alpha_s = list(range(stt_b, stt_b + n_beta)), list(range(stt_a, stt_a + N))
 
     alpha_s = np.array(np.mod(alpha_s, p)).astype('int64')
     beta_s = np.array(np.mod(beta_s, p)).astype('int64')
@@ -161,8 +161,8 @@ def LCC_encoding_w_Random(X, R_, N, K, T, p):
     # print U
 
     X_LCC = np.zeros((N, m // K, d), dtype='int64')
-    for i in range(N):
-        for j in range(K + T):
+    for i in list(range(N)):
+        for j in list(range(K + T)):
             X_LCC[i, :, :] = np.mod(X_LCC[i, :, :] + np.mod(U[i][j] * X_sub[j, :, :], p), p)
     return X_LCC
 
@@ -172,14 +172,14 @@ def LCC_encoding_w_Random_partial(X, R_, N, K, T, p, worker_idx):
     d = len(X[0])
     # print(m,d,m//K)
     X_sub = np.zeros((K + T, m // K, d), dtype='int64')
-    for i in range(K):
+    for i in list(range(K)):
         X_sub[i] = X[i * m // K:(i + 1) * m // K:]
-    for i in range(K, K + T):
+    for i in list(range(K, K + T)):
         X_sub[i] = R_[i - K, :, :].astype('int64')
 
     n_beta = K + T
     stt_b, stt_a = -int(np.floor(n_beta / 2)), -int(np.floor(N / 2))
-    beta_s, alpha_s = range(stt_b, stt_b + n_beta), range(stt_a, stt_a + N)
+    beta_s, alpha_s = list(range(stt_b, stt_b + n_beta)), list(range(stt_a, stt_a + N))
     alpha_s = np.array(np.mod(alpha_s, p)).astype('int64')
     beta_s = np.array(np.mod(beta_s, p)).astype('int64')
     alpha_s_eval = [alpha_s[i] for i in worker_idx]
@@ -189,8 +189,8 @@ def LCC_encoding_w_Random_partial(X, R_, N, K, T, p, worker_idx):
 
     N_out = U.shape[0]
     X_LCC = np.zeros((N_out, m // K, d), dtype='int64')
-    for i in range(N_out):
-        for j in range(K + T):
+    for i in list(range(N_out)):
+        for j in list(range(K + T)):
             X_LCC[i, :, :] = np.mod(X_LCC[i, :, :] + np.mod(U[i][j] * X_sub[j, :, :], p), p)
     return X_LCC
 
@@ -200,7 +200,7 @@ def LCC_decoding(f_eval, f_deg, N, K, T, worker_idx, p):
 
     n_beta = K  # +T
     stt_b, stt_a = -int(np.floor(n_beta / 2)), -int(np.floor(N / 2))
-    beta_s, alpha_s = range(stt_b, stt_b + n_beta), range(stt_a, stt_a + N)
+    beta_s, alpha_s = list(range(stt_b, stt_b + n_beta)), list(range(stt_a, stt_a + N))
     alpha_s = np.array(np.mod(alpha_s, p)).astype('int64')
     beta_s = np.array(np.mod(beta_s, p)).astype('int64')
     alpha_s_eval = [alpha_s[i] for i in worker_idx]
@@ -234,13 +234,13 @@ def MultPassive(A_SS_T, B_SS_T, R_SS_T, R_SS_2T, N, T, p):
     # print("size of AB =", np.shape(A_SS_T)[1], np.shape(B_SS_T)[2])
 
     AB_SS_2T = np.empty((N, np.shape(A_SS_T)[1], np.shape(B_SS_T)[2]))
-    for i in range(N):
+    for i in list(range(N)):
         AB_SS_2T[i, :, :] = np.mod(np.matmul(A_SS_T[i, :, :], B_SS_T[i, :, :]), p)
     delta_SS_2T = np.mod(AB_SS_2T - R_SS_2T, p)
 
     delta_SS_2T = np.reshape(delta_SS_2T, (N, np.prod(delta_SS_2T.shape[1:])))
 
-    worker_idx = random.sample(range(N), 2 * T + 1)  # XXX
+    worker_idx = random.sample(list(range(N), 2 * T + 1))  # XXX
     delta = BGW_decoding(delta_SS_2T[worker_idx, :], worker_idx, p)
 
     # print(delta)
@@ -273,7 +273,7 @@ def TruncPr(a_BGW, k, m, p, N, T):
     c_BGW = np.mod(b_BGW + r_BGW, p)
 
     RT_BGW = T + 1  # XXX
-    worker_idx = random.sample(range(N), RT_BGW)  # XXX
+    worker_idx = random.sample(list(range(N), RT_BGW))  # XXX
 
     c = BGW_decoding(c_BGW[worker_idx, 0, :], worker_idx, p)
     # print(c)

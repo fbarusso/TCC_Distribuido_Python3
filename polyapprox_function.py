@@ -17,7 +17,7 @@ def polyapp(samples):  # polynomial (degree-2) approximation for the sigmoid fun
     A = np.empty((samples, 3))  # for degree 2 polynomial
     ypoly = np.empty((samples, 1))  # y values for the polynomial
 
-    for j in range(samples):
+    for j in list(range(samples)):
         A[j] = [1, xpoly[j], (xpoly[j]) ** 2]
     ypoly = sigmoid(xpoly)
 
